@@ -14,7 +14,11 @@ export default function LotteryEntrance() {
 
   const dispatch = useNotification()
 
-  const { runContractFunction: enterLottery } = useWeb3Contract({
+  const {
+    runContractFunction: enterLottery,
+    isLoading,
+    isFetching,
+  } = useWeb3Contract({
     // ABI will alaways stay the same
     abi: abi,
     contractAddress: lotteryAddress,
@@ -78,32 +82,36 @@ export default function LotteryEntrance() {
   const winnerNotification = async () => {}
 
   return (
-    <>
-      <div>
-        Welcome to the lottery!
-        {lotteryAddress ? (
-          <div>
-            <button
-              onClick={async function () {
-                await enterLottery({
-                  onSuccess: handleSuccess,
-                  onError: (error) => console.log(error),
-                })
-              }}
-            >
-              Enter Lottery
-            </button>
-            <br />
-            The entrance fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH
-            <br />
-            Number of players: {numPlayers}
-            <br />
-            Recent Winner: {recentWinner}
-          </div>
-        ) : (
-          <div>No lottery address detected</div>
-        )}
-      </div>
-    </>
+    <div className="p-5">
+      Welcome to the lottery!
+      {lotteryAddress ? (
+        <div>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bolt py-2 px-4 rounded ml-auto"
+            onClick={async function () {
+              await enterLottery({
+                onSuccess: handleSuccess,
+                onError: (error) => console.log(error),
+              })
+            }}
+            disabled={isLoading || isFetching}
+          >
+            {isLoading || isFetching ? (
+              <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
+            ) : (
+              <div>Enter Lottery</div>
+            )}
+          </button>
+          <br />
+          The entrance fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH
+          <br />
+          Number of players: {numPlayers}
+          <br />
+          Recent Winner: {recentWinner}
+        </div>
+      ) : (
+        <div>No lottery address detected</div>
+      )}
+    </div>
   )
 }
