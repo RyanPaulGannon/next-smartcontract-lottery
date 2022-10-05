@@ -75,6 +75,8 @@ export default function LotteryEntrance() {
     })
   }
 
+  const winnerNotification = async () => {}
+
   return (
     <>
       <div>
